@@ -16,7 +16,7 @@ if __name__ == "__main__":
     dx = [0, 1, 0, -1]
     dy = [1, 0, -1, 0]
 
-    count = 0
+    count = 1
 
     max_turn = 4
     num_turn = 0
@@ -36,12 +36,21 @@ if __name__ == "__main__":
             x = x_temp
             count += 1
             num_turn = 0
-
             continue
-
-        num_turn += 1
+        else:
+            num_turn += 1
 
         if num_turn == 4:
-            break
+            x_temp = x - dx[direction]
+            y_temp = y - dy[direction]
+            
+            if map_[x_temp][y_temp] == 1:
+                break
+            
+            x = x_temp
+            y = y_temp
+
+            num_turn = 0
+
 
     print(count)
