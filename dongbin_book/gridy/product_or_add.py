@@ -14,9 +14,6 @@ def product_or_add(input):
     return result
 
 
-
-
-
 if __name__ == "__main__":
     input = '111112'
 
