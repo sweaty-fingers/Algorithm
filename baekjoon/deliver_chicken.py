@@ -1,18 +1,14 @@
 def get_house_and_chicken(mapping):
 
-    house = {}
-    chicken = {}
-    num_house = 0
-    num_chicken = 0
+    house = []
+    chicken = []
     for i, r in enumerate(mapping):
         for c in range(len(r)):
             if r[c] == 1:
-                house[str(num_house)] = (i, c)
-                num_house += 1
+                house.append((i, c))
+                
             if r[c] == 2:
-                chicken[str(num_chicken)] = (i, c)
-                num_chicken += 1
-
+                chicken.append((i, c))
     return house, chicken
 
 
@@ -23,9 +19,9 @@ def get_distance(house, chicken):
     column : 치킨집 번호
     """
     distance = []
-    for h in house.values():
+    for h in house:
         dist = []
-        for c in chicken.values():
+        for c in chicken:
             d = abs(h[0] - c[0]) + abs(h[1] - c[1])
             dist.append(d)
         distance.append(dist)
