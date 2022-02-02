@@ -44,6 +44,6 @@ def solution(n, weak, dist):
             if answer != -1:
                 min_dist = min(answer, min_dist)
     if min_dist <= len(dist):
-        return min_dist
+        return min_dist 
 
     return -1
