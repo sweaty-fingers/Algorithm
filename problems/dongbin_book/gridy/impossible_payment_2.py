@@ -7,7 +7,7 @@ def get_input():
 
 def main():
     n, coins = get_input()
-    
+
     coins.sort()
     target = 1
     for c in coins:
