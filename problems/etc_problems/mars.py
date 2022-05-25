@@ -26,7 +26,7 @@ def dijkstra(graph, distance, start=0):
     
     q = []
     heapq.heappush(q, (0, start))
-    distance[start] = 0
+    distance[start] = 09
     
     while q:
         dist, node = heapq.heappop(q)
@@ -42,6 +42,7 @@ def dijkstra(graph, distance, start=0):
                 heapq.heappush(q, (cost, g[0]))
     
     return distance[-1] + graph[-1][-1][-1]
+
 
 def main():
     r = int(input())
@@ -83,6 +84,3 @@ if __name__ == "__main__":
 # 20
 # 19
 # 36
-            
-        
-        
