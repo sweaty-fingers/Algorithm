@@ -1,6 +1,6 @@
 from collections import deque
 
-move = [(-1, 0), (0, -1), (1, 0), (0, 1)] # 상 좌 하 우
+move = [(-1, 0), (0, -1), (0, 1), (1, 0)] # 상 좌 우 하
 
 def get_input():
     n = int(input())
@@ -25,7 +25,7 @@ def bfs(graph):
     num_ate = 0
     t = 0
     q = deque([(y, x, t)])
-    
+    visited = [[-1] * n for _ in range(n)]
     if not check_fish(graph, size_shark):
         return t
     
@@ -37,7 +37,7 @@ def bfs(graph):
             num_ate += 1
             t += t_tmp
             q = deque([(y, x, 0)])
-            
+            visited = [[-1] * n for _ in range(n)]
             # for g in graph:
             #     print(g)
             # print(f"t: {t}")
@@ -64,12 +64,13 @@ def bfs(graph):
             if not ((0 <= y_tmp < n) and (0 <= x_tmp < n)):
                 continue
             
-            if graph[y_tmp][x_tmp] > size_shark:
+            if graph[y_tmp][x_tmp] > size_shark or visited[y_tmp][x_tmp] != -1:
                 continue
             
             q.append((y_tmp, x_tmp, t_tmp + 1))
             
     return t
+
 
 def check_fish(graph, size_shark):
     n = len(graph)
