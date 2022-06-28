@@ -13,16 +13,16 @@ root_logger = logging.getLogger()
 root_logger.addHandler(console_handler)
 root_logger.setLevel(logging.INFO)
 
-K = 0
-shark_moves = []
+shark_moves = {}
 shark_direct = []
 result = 0
+K = 0
 
 
 def get_input():
-    global K
     global shark_moves
     global shark_direct
+    global K
 
     n, m, K = map(int, input().split(" "))
 
@@ -33,7 +33,7 @@ def get_input():
         for j, r in enumerate(row):
             graph[i].append(r)
             if r != 0:
-                shark_dict[r].append((i, j))
+                shark_dict[r].append([i, j, K])
 
     shark_direct = [0] + list(map(int, input().split(" ")))
 
@@ -48,42 +48,60 @@ def get_input():
 def remove_idx(shark, graph):
     global K
 
-    if len(shark) >= K + 1:
-        ry, rx = shark.popleft()
-        if (ry, rx) not in shark:
-            graph[ry][rx] = 0
+    for i in range(len(shark)):
+        shark[i][-1] -= 1
+        
+    if shark:
+        while shark[0][-1] <= 0:
+            y, x, _ = shark.popleft()
+            graph[y][x] = 0
+            
+            if not shark:
+                break
+    
+    return graph
+
+def remove_from_graph(shark, graph):
+    for y, x, _ in shark:
+        graph[y][x] = 0
+    return graph
 
 
-def move_shark(graph, shark_dict):
+def move_shark(graph, shark_dict, is_shark):
     global shark_moves
     global shark_direct
-    global K
     global result
+    global K
 
     n = len(graph)
     m = len(shark_dict)
-    n_shark = 0
+    
     for i in range(1, m + 1):
-        if not shark_dict[i]:
+        if not is_shark[i]:
+            remove_idx(shark_dict[i], graph)
             continue
 
-        n_shark += 1
-        y, x = shark_dict[i][-1]
+        y, x, _ = shark_dict[i][-1]
         direct = shark_direct[i]
+        is_move = False
 
-        for di in shark_moves[i][direct]:
+        for di in shark_moves[i][direct - 1]:
             y_tmp, x_tmp = y + move[di - 1][0], x + move[di - 1][1]
 
             if not ((0 <= y_tmp < n) and (0 <= x_tmp < n)):
                 continue
-
+            
             if graph[y_tmp][x_tmp] == 0:
                 shark_direct[i] = di
-                shark_dict[i].append((y_tmp, x_tmp))
                 remove_idx(shark_dict[i], graph)
+                shark_dict[i].append([y_tmp, x_tmp, K])
+                is_move=True
                 break
-
-        for di in shark_moves[i][direct]:
+        
+        if is_move:
+            continue
+        
+        for di in shark_moves[i][direct - 1]:
             y_tmp, x_tmp = y + move[di - 1][0], x + move[di - 1][1]
 
             if not ((0 <= y_tmp < n) and (0 <= x_tmp < n)):
@@ -91,37 +109,65 @@ def move_shark(graph, shark_dict):
 
             if graph[y_tmp][x_tmp] == i:
                 shark_direct[i] = di
-                shark_dict[i].append((y_tmp, x_tmp))
                 remove_idx(shark_dict[i], graph)
+                shark_dict[i].append([y_tmp, x_tmp, K])
                 break
 
-    if n_shark == 1:
+    # if sum(is_shark) == 1:
+    #     return result
+    
+    only_one = True
+    for i in range(len(graph)):
+        for j in range(len(graph)):
+            if graph[i][j] > 1:
+                only_one = False
+                
+    if only_one:
         return result
-
-    other_sharks = []
+            
+    in_shark = []
     for i in range(1, len(shark_dict) + 1):
-        y, x = shark_dict[i][-1]
-        if (y, x) in other_sharks:
-            shark_dict[i] = []
+        
+        if not shark_dict[i]:
+            continue
+        
+        y, x, _ = shark_dict[i][-1]
+        if graph[y][x] == 0:
+            graph[y][x] = i
         else:
-            other_sharks.append((y, x))
-
+            is_shark[i] = False
+            
     result += 1
-
-    move_shark(graph, shark_dict)
+    
+    root_logger.info(f"result: {result}")
+    root_logger.info("graph")
+    for g in graph:
+        root_logger.info(g)
+    root_logger.info(f"n_shark = {sum(is_shark)}")
+    root_logger.info("shark")
+    root_logger.info(f"{shark_dict}")
+    root_logger.info("")
+    root_logger.info("")
+    root_logger.info("-" * 60)
+    input(" ")
+    
+    move_shark(graph, shark_dict, is_shark)
 
 
 def main():
+    global K
+    global result
     graph, shark_dict = get_input()
-
+    is_shark = [False] + [True] * K
     root_logger.info("")
     root_logger.info("graph")
     for g in graph:
         root_logger.info(g)
 
     root_logger.info(shark_dict)
+    move_shark(graph, shark_dict, is_shark)
     
-    print(move_shark(graph, shark_dict))
+    print(result)
 
 
 if __name__ == "__main__":
