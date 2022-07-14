@@ -50,7 +50,7 @@ def bfs(graph):
                     seen.add((y_tmp, x_tmp))
 
     return max_d
-    
+
 
 def main():
     graph = get_input()
