@@ -26,6 +26,9 @@ def get_input():
 
 
 def move_fishes(fishes, smell_graph):
+    """
+    물고기 이동
+    """
     
     graph = [[0] * 4 for _ in range(4)]
     n = len(graph)
@@ -127,6 +130,7 @@ def main():
     y, x = shark[0] - 1, shark[1] - 1
     
     for i in range(s):
+        # 복제를 위한 물고기 위치 기록
         du_fishes = deepcopy(fishes)
         graph, fishes = move_fishes(fishes, smell_graph)
         ate_max, fish_smells = 0, []
